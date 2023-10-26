@@ -128,7 +128,9 @@ Max Server Memory
 
    ReF.: https://www.youtube.com/watch?v=OijdLj4lw5c
 
-   Para saber mais.
+   👇Para saber mais.
+
+   https://github.com/JosiTubaroski/-Onde_dados_repousam.-/edit/main/02%20-%20Arquitetura%20da%20Memoria.sql
 
 
    
