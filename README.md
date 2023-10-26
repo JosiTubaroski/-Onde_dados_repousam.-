@@ -53,6 +53,7 @@ alocar todas as novas páginas em Uniform Extent.
 
 👇 Saiba Mais:
 
+https://github.com/JosiTubaroski/-Onde_dados_repousam.-/blob/main/01%20-%20P%C3%A1gina%20e%20Extent.sql
 
   
     
