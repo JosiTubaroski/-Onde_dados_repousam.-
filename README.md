@@ -128,6 +128,8 @@ Max Server Memory
 
    ReF.: https://www.youtube.com/watch?v=OijdLj4lw5c
 
+   Para saber mais.
+
 
    
   
