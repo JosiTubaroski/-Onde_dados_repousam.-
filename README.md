@@ -55,5 +55,82 @@ alocar todas as novas páginas em Uniform Extent.
 
 https://github.com/JosiTubaroski/-Onde_dados_repousam.-/blob/main/01%20-%20P%C3%A1gina%20e%20Extent.sql
 
+# Menória da instância do SQL Server. A configuração ideal!
+
+Vamos começar com a seguinte pergunta:
+
+É mais rápido acessar os dados em memória ou em disco?
+
+A sua resposta já diz por que o SQL Server deve ter memória suficiente para atender a carga de dados.
+
+Menória.
+
+ - Quanto mais, melhor. Memória será utilizada para carregar os dados que estão em disco para uma área no SQL Server conhecida como Buffer Pool.
+
+ - Quanto mais dados o SQL Server conseguir manter em memória, melhor. Servidores com 16Gb, 32GB ou 64GB atende a maioria das demandas. Mas encontramos
+   instalações que chegam a mais de 512Gb de memória.
+
+   Apesar da recomendação mínima da Microsoft para memória do SQL Server é de 1Gb, eu recomendo iniciar com 4Gb, mas o correto deve ser a anãlise do
+   ambiente para um melhor dimensionamento.
+
+### SQL Server
+
+Buffer Pool ou Buffer Cache.
+
+Um buffer é uma área de 8Kbytes na mémoria onde o SQL Server armazena as páginas de dados lidas dos objetos de alocação que estão no disco
+(papel do Gerenciador de Buffer).
+
+O dado permanece no buffer até que o Gerenciador de Buffer precise de mais áreas para carregar novas páginas de dados. As áreas de buffer
+mais antigas e com dados modificados são gravados em discos e liberados para as novas paginas.
+
+Quando o SQL Server necessita de um dado e o mesmo está no buffer, ele faz uma leitura lógica desse dado. Se o dado não estiver no buffer, o SQL Server
+faz uma leitura física do dado em disco para o buffer pool.
+
+A área de memória onde fica o Buffer Pool é configurada no SQL Server como Min Server Memory e Max Server Memory.
+
+Configurando a memória no SQL Server
+
+  Quando instalamos o SQL Server, ele configura automáticamente a utilização da memória disponível no servidor. Ele tem as opções de "Max Server Memory"
+  e "Min Server Memory" que voce pode consulta com o com o seguinte comando
+
+  execute sp_configure 'show advanced options' , 1
+go
+reconfigure with override 
+
+execute sp_configure 'min server memory (MB)'
+execute sp_configure 'max server memory (MB)'
+   
+Na execução acima temos 1024Kb de memoria mínima e 2147483647KB(?) de memoria máxima.
+2 Tb de memória máxima?
+
+Min Server Memory
+
+- Não significa memória mínima que o SQl Server utiliza.
+
+- Quando inicializamos o serviço do SQL Server, ele aloca inicialmente 128Kb e espera as atividades de inclusão, alteração e exclusão de dados pela
+  aplicação. No decorrer da execução das consultas, o SQL Server carrega os dados do disco e aloca na memoria que ele reservou. Essa memória inicial
+  até atingir o valor de 'Min Server Memory' é do SQL SERVER e ele não entrega ao SO, se ele solicitar.
+
+  Quando a alocação ultrapassa esse valor mínimo, o SQL Server continua a alocar mais memória. Mas se por algum motivo, o SO solicitar memória
+  do SQL Server, o mesmo pode liberar a memória, mas até atingir o limite minimo.
+
+Max Server Memory
+
+ - Não significa memória máxima que o SQL SERVER utiliza.
+ - Quando o SQL SERVER continua a realizar a alocação de dados do disco para a memória, ele somente realiza as até atingir o valor 'Max Server Memory'.
+   Se o SQL Server precisar alocar novos dados em memoria, ele começa a gravar em disco os dados mais antigos em disco, liberar a area da memória e alocar
+   os novos dados.
+
+   Se o SO não tiver memória suficiente para trabalhar ou para outras aplicações alocarem seus dados, o SO solicita ao SQL Server memória. Se a memória do SQL
+   Server reservado não estiver alocado, o SQL Server grava os dados em disco e libera a memoria para o SO.
+
+   O SQL Server liberar memória até atingir o valor de 'Min Server Memory'
+
+   ReF.: https://www.youtube.com/watch?v=OijdLj4lw5c
+
+
+   
+  
+
   
     
